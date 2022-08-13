@@ -1,0 +1,111 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-size: 12px;
+    font-family: "Poppins", sans-serif;
+}
+
+:root {
+    --color-primary: #{$light-primary};
+    --color-second: #{$light-second};
+    --color-third: #{$light-third};
+    --color-text: #{$light-text};
+    --color-blue: #{$blue};
+    --color-white: #{$white};
+    --color-black: #{$black};
+}
+
+[data-theme="dark"] {
+    --color-primary: #{$dark-primary};
+    --color-second: #{$dark-second};
+    --color-third: #{$dark-third};
+    --color-text: #{$dark-text};
+}
+
+body {
+    background: var(--color-primary);
+}
+
+input {
+    color: var(--color-text);
+}
+
+.dark {
+    animation: dark 1.3s;
+    animation-fill-mode: forwards;
+    clip-path: circle(100%);
+    opacity: 1;
+    height: 100vh;
+    width: 100vw;
+    background: --color-primary;
+}
+
+.light {
+    animation: light 1.3s;
+    animation-fill-mode: forwards;
+    clip-path: circle(100%);
+    opacity: 1;
+    height: 100vh;
+    width: 100vw;
+    background: --color-primary;
+}
+
+@keyframes dark {
+    0% {
+        clip-path: circle(10% at 80% 5%);
+        opacity: 0;
+    }
+    100% {
+        clip-path: circle(100%);
+        opacity: 1;
+    }
+}
+
+@keyframes light {
+    0% {
+        clip-path: circle(10% at 80% 5%);
+        opacity: 0;
+    }
+    100% {
+        clip-path: circle(100%);
+        opacity: 1;
+    }
+}
+
+li {
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+    color: var(--color-text);
+}
+
+*::-webkit-scrollbar {
+    display: none;
+}
+
+*::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 0.25rem;
+    box-shadow: 0px 2px 5px transparent;
+}
+
+button {
+    min-width: 100px;
+    border-radius: 1rem;
+    padding: 1rem 2rem;
+    &:hover {
+        opacity: 0.8;
+    }
+    & > img {
+        max-width: 2.5rem;
+        max-height: 2.5rem;
+        margin: auto;
+    }
+}

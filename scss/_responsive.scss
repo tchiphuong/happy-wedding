@@ -1,0 +1,122 @@
+.row {
+    width: 100%;
+    display: block;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.container {
+    width: 100%;
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
+    margin-right: auto;
+    margin-left: auto;
+    // display: flex;
+}
+
+// Extra Small devices (landscape phones, 576px and up)
+@media (max-width: 576px) {
+    * {
+        font-size: 12px;
+    }
+    .container {
+        max-width: 100%;
+    }
+
+    .col-xs-0 {
+        display: none !important;
+    }
+
+    @for $i from 1 through 12 {
+        $width: percentage($i / 12);
+
+        .col-xs-#{$i} {
+            width: $width;
+            display: block;
+        }
+    }
+}
+
+// Small devices (landscape phones, 576px and up)
+@media (min-width: 576px) {
+    .container {
+        max-width: 540px;
+    }
+
+    .col-s-0 {
+        display: none !important;
+    }
+
+    @for $i from 1 through 12 {
+        $width: percentage($i / 12);
+
+        .col-s-#{$i} {
+            width: $width;
+            display: block;
+        }
+    }
+}
+
+// Medium devices (tablets, 768px and up)
+@media (min-width: 768px) {
+    .container {
+        max-width: 720px;
+    }
+
+    .col-m-0 {
+        display: none !important;
+    }
+
+    @for $i from 1 through 12 {
+        $width: percentage($i / 12);
+
+        .col-m-#{$i} {
+            width: $width;
+            display: block;
+        }
+    }
+}
+
+// Large devices (desktops, 992px and up)
+@media (min-width: 992px) {
+    * {
+        font-size: 16px;
+    }
+    .container {
+        max-width: 960px;
+    }
+
+    .col-l-0 {
+        display: none !important;
+    }
+
+    @for $i from 1 through 12 {
+        $width: percentage($i / 12);
+
+        .col-l-#{$i} {
+            width: $width;
+            display: block;
+        }
+    }
+}
+
+// Extra large devices (large desktops, 1200px and up)
+@media (min-width: 1200px) {
+    .container {
+        max-width: 1140px;
+    }
+
+    .col-xl-0 {
+        display: none !important;
+    }
+
+    @for $i from 1 through 12 {
+        $width: percentage($i / 12);
+
+        .col-xl-#{$i} {
+            width: $width;
+            display: block;
+        }
+    }
+}

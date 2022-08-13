@@ -1,0 +1,295 @@
+@import url("https://fonts.googleapis.com/css2?family=Abel&display=swap");
+.wrapper {
+	height: 100%;
+	.cover {
+		background-image: url("../img/cover3.jpg");
+		//background-image: url("https://images.unsplash.com/photo-1529634597503-139d3726fed5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1169&q=80");
+		background-position: center;
+		background-position: right;
+		background-repeat: no-repeat;
+		background-size: cover;
+		height: 100%;
+		width: 100%;
+		.countdown {
+			position: absolute;
+			width: fit-content;
+			color: #eee;
+			background: rgba(0, 0, 0, 0.5);
+			width: 100%;
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			overflow: hidden;
+			&::after {
+				content: "";
+				background: transparent;
+				bottom: -20px;
+				inset: 0;
+				position: absolute;
+				border-left: 100vw solid transparent;
+				border-bottom: 6rem solid var(--color-primary);
+			}
+			&__name {
+				font-size: 3rem;
+				max-width: 400px;
+				font-family: "Tiro Gurmukhi", serif;
+				& > span {
+					font-size: 2rem;
+					margin: 0 1rem;
+				}
+			}
+			&__title {
+				text-align: center;
+				font-style: italic;
+				font-size: 1.5rem;
+				padding: 2rem 0;
+			}
+			&__detail {
+				display: grid;
+				grid-template-columns: repeat(4, 1fr);
+				& > :last-child {
+					border: none;
+				}
+			}
+			&__item {
+				border-right: 0.025rem solid #eee;
+				padding: 0 1.5rem;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+				& > :first-child {
+					font-size: 3rem;
+					line-height: 3rem;
+				}
+				& > :nth-child(2) {
+					padding: 0;
+					font-size: 1.25rem;
+					text-transform: uppercase;
+				}
+			}
+		}
+	}
+
+	.invite {
+		margin: 6rem 0;
+		background-image: url("../img/img1.jpg");
+		background-image: url("https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80");
+		background-position: center;
+		background-repeat: no-repeat;
+		background-size: cover;
+		position: relative;
+		padding: 3rem;
+		color: #242526;
+		// &::after {
+		// 	content: "";
+		// 	background: transparent;
+		// 	bottom: -20px;
+		// 	inset: 0;
+		// 	position: absolute;
+		// 	border-right: 100vw solid transparent;
+		// 	border-top: 6rem solid var(--color-primary);
+		// }
+		&__title {
+			text-align: center;
+			font-size: 29px;
+			padding: 2rem 4rem;
+			font-weight: 600;
+		}
+		&__detail {
+			border: 3px #fff solid;
+			border-radius: 0.25rem;
+			padding: 2rem 0;
+			margin: 0 auto;
+			display: flex;
+			max-width: 800px;
+			position: relative;
+			&::after {
+				content: "";
+				position: absolute;
+				inset: 2rem calc(-2rem - 3px * 2);
+				border: 3px #fff solid;
+				border-radius: 0.25rem;
+			}
+		}
+		&__card {
+			color: #242526;
+			font-size: 39px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			flex-direction: column;
+			font-size: 99px;
+			line-height: 99px;
+			max-height: 400px;
+			height: 600px;
+			background: rgba(255, 255, 255, 0.15);
+			backdrop-filter: blur(6px);
+			border: 1px solid rgba(255, 255, 255, 0.18);
+			font-family: "Tiro Gurmukhi", serif;
+			text-transform: capitalize;
+			& > span {
+				font-size: 39px;
+				line-height: 39px;
+				text-transform: uppercase;
+			}
+		}
+		&__content {
+			max-height: 400px;
+			height: 600px;
+			float: left;
+			flex-direction: column;
+			align-items: center;
+			padding: 3rem 1rem;
+			background: rgba(255, 255, 255, 0.15);
+			backdrop-filter: blur(6px);
+			border: 1px solid rgba(255, 255, 255, 0.18);
+			& * {
+				font-size: 20px;
+			}
+			&--header {
+				&-name {
+					display: flex;
+					flex-direction: column;
+					text-align: center;
+					& > div {
+						font-family: "Tiro Gurmukhi", serif;
+						font-size: 39px;
+						line-height: 39px;
+					}
+					& > span {
+						font-size: 20px;
+						line-height: 30px;
+						margin: 0 0.25rem;
+					}
+				}
+			}
+			&--body {
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+				padding: 2rem 0;
+				&-time {
+					text-align: center;
+					padding: 1rem 0;
+					& * {
+						font-family: "Tiro Gurmukhi", serif;
+					}
+					& .body_date {
+						font-weight: 600;
+						font-size: 29px;
+					}
+					& .body_time {
+						font-size: 24px;
+					}
+					& span {
+						font-size: 24px;
+						padding-left: 0.5rem;
+					}
+				}
+				&-location {
+					padding: 0.5rem 0;
+					font-size: 18px;
+					text-align: center;
+					font-style: italic;
+				}
+			}
+			&--footer {
+				text-align: center;
+			}
+		}
+	}
+
+	.container {
+		.gallery {
+			&__title {
+				font-size: 39px;
+				font-weight: 600;
+				font-family: "Tiro Gurmukhi", serif;
+				text-align: center;
+			}
+			&__item {
+				padding: 0.5rem;
+				flex-shrink: 1;
+				aspect-ratio: 3/4;
+				& > img {
+					width: 100%;
+					height: 100%;
+					object-fit: cover;
+					border-radius: 0.5rem;
+					box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+				}
+			}
+		}
+	}
+	.location {
+		margin: 6rem 0;
+		&__title {
+			font-size: 39px;
+			font-weight: 600;
+			font-family: "Tiro Gurmukhi", serif;
+			text-align: center;
+		}
+		.map {
+			iframe {
+				height: 300px;
+				width: 100%;
+			}
+		}
+	}
+	.footer {
+		padding-bottom: 6rem;
+		&__title {
+			font-size: 39px;
+			font-weight: 600;
+			font-family: "Tiro Gurmukhi", serif;
+			text-align: center;
+		}
+	}
+}
+
+.view-img {
+	position: fixed;
+	inset: 0;
+	background: rgba(255, 255, 255, 0.15);
+	backdrop-filter: blur(6px);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	&__wrap {
+		max-width: 90vw;
+		max-height: 90vh;
+		overflow: hidden;
+		transition: width 2s;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+	&__close {
+		position: absolute;
+		background: #eee;
+		padding: 0.5rem 1rem;
+		& * {
+			font-size: 40px;
+			color: #242526;
+		}
+	}
+	&__img {
+		width: 100%;
+		height: 100%;
+		max-width: 90vw;
+		max-height: 90vh;
+		animation: viewImg 0.75s;
+		object-fit: contain;
+		border-radius: 1.3rem;
+	}
+}
+
+@keyframes viewImg {
+	0% {
+		width: 0;
+	}
+}
