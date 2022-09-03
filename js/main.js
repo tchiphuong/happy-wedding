@@ -98,14 +98,7 @@ $(function () {
             secondsArr.map((item, index) => {
                 $("#seconds").append(`<div id="seconds-` + index + `">` + item + `</div>`);
             });
-            // $("#seconds").html(secondChild);
-            console.log(days, hours, minutes, seconds);
-            // console.log(daysArr, hoursArr, minutesArr, secondsArr);
         }
-        // $("#days").html(days);
-        // $("#hours").html(hours);
-        // $("#minutes").html(minutes);
-        // $("#seconds").html(seconds);
     }
 
     setInterval(function () {
