@@ -42,17 +42,8 @@ $(function () {
         setLanguage(localStorage.getItem("langId"));
     });
 
-    $("div.gallery__item").click(function (e) {
-        $(".view-img").show();
-        $(".view-img__img").attr("src", $(e.currentTarget).find("img")[0].currentSrc);
-    });
-
-    $(".view-img").click(function (e) {
-        $(e.currentTarget).hide();
-    });
-
     function makeTimer() {
-        var endTime = new Date("23 january 2023 00:00:00 GMT+07:00");
+        var endTime = new Date("10 August 2024 00:00:00 GMT+07:00");
         endTime = Date.parse(endTime) / 1000;
 
         var now = new Date();
@@ -104,38 +95,126 @@ $(function () {
     setInterval(function () {
         makeTimer();
     }, 1000);
+
+    GetImageURL();
+
+    $("#download-invite").on("click", function () {
+        const toImgArea = document.getElementById("img-fill");
+
+        // transform to canvas
+        html2canvas(toImgArea, {
+            type: "view",
+        }).then(function (canvas) {
+            var a = document.createElement("a");
+            // toDataURL defaults to png, so we need to request a jpeg, then convert for file download.
+            a.href = canvas.toDataURL("image/jpeg").replace("image/jpeg", "image/octet-stream");
+            a.download = "somefilename.jpg";
+            a.click();
+        });
+    });
 });
 
+var dataImage;
+var lstImage = [];
+
 function GetImageURL() {
-    var fileType = "img";
-    var dir = "./img";
-    var fileextension = ".jpg";
+    var dir = "./img/gallery";
+    var fileExtension = ".jpg";
     $.ajax({
-        //This will retrieve the contents of the folder if the folder is configured as 'browsable'
         url: dir,
         success: function (data) {
-            //List all .png file names in the page
-            $(data)
-                .find("a:contains(" + fileextension + ")")
-                .each(function () {
-                    var filename = this.href
-                        .replace(window.location.host, "")
-                        .replace("http://", "")
-                        .replace("/img/", "");
-                    if (filename.localeCompare(fileType) === 1) {
-                        $(".gallery__list").append(
-                            `
-                        <div class="col-xs-6 col-m-4 gallery__item">
-                            <img src="./img/` +
-                                filename +
-                                `" alt="` +
-                                filename +
-                                `">
-                        </div>
-                    `
-                        );
-                    }
-                });
+            dataImage = $(data).find("a:contains(" + fileExtension + ")");
+            RenderImageGallery(dataImage);
         },
     });
 }
+
+function RenderImageGallery(data, pageIndex = 1) {
+    const length = data.length;
+    const itemInPage = 12;
+    const totalPage = parseInt(Math.ceil(length / itemInPage));
+    data = data.slice((pageIndex - 1) * itemInPage, itemInPage * pageIndex);
+    $(".pagination").empty();
+    if (pageIndex > 1) {
+        $(".pagination").append(
+            `<li class="pagination__item">
+            <button class="pagination__index" page-target="${parseInt(pageIndex) - 1}"><i class="fa-solid fa-chevron-left"></i></button>
+            </li>`
+        );
+    }
+    for (let i = 0; i < totalPage; i++) {
+        $(".pagination").append(
+            `<li class="pagination__item ${i + 1 == pageIndex ? "active" : ""}">
+                <button class="pagination__index" page-target="${i + 1}">${i + 1}</button>
+            </li>`
+        );
+    }
+    if (pageIndex < totalPage) {
+        $(".pagination").append(
+            `<li class="pagination__item">
+            <button class="pagination__index" page-target="${parseInt(pageIndex) + 1}"><i class="fa-solid fa-chevron-right"></i></button>
+            </li>`
+        );
+    }
+
+    $(".pagination__index").on("click", function () {
+        $(this)
+            .parents(".pagination")
+            .find("pagination__item")
+            .each(function () {
+                $(this).parent().removeClass("active");
+            });
+        const pageIndex = $(this).attr("page-target");
+        RenderImageGallery(dataImage, pageIndex);
+        $(this).parent().addClass("active");
+        window.location.href = "#gallery";
+    });
+
+    $(".gallery__list").empty();
+    lstImage = [];
+    data.each(function () {
+        lstImage.push(this.href);
+        $(".gallery__list").append(
+            `<div class="col-xs-6 col-m-4 gallery__item">
+                <img src="${this.href}" alt="${this.href.split("/")[this.href.split("/").length - 1].split(".")[0]}">
+            </div>`
+        );
+        $("div.gallery__item").click(function (e) {
+            $(".view-img").show();
+            $(".view-img__img").attr("src", $(e.currentTarget).find("img")[0].currentSrc);
+        });
+
+        $(".view-img__wrap").click(function (e) {
+            $(this).parent().hide();
+        });
+    });
+}
+
+$(document).on("click", "#prev", function () {
+    var img = $(".view-img__img");
+    var imgIndex = (lstImage.indexOf(img.attr("src")) - 1 + lstImage.length) % lstImage.length;
+    img.attr("src", lstImage[imgIndex]);
+});
+
+$(document).on("click", "#next", function () {
+    var img = $(".view-img__img");
+    var imgIndex = (lstImage.indexOf(img.attr("src")) + 1) % lstImage.length;
+    img.attr("src", lstImage[imgIndex]);
+});
+
+var btn = $("#button");
+
+$(window).scroll(function () {
+    if ($(window).scrollTop() > 60) {
+        btn.addClass("show");
+        btn.show();
+    } else {
+        btn.hide();
+        btn.removeClass("show");
+    }
+});
+
+btn.on("click", function (e) {
+    e.preventDefault();
+    $("html, body").animate({ scrollTop: 0 }, "300");
+});
