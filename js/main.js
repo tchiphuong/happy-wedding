@@ -114,19 +114,14 @@ $(function () {
     });
 });
 
-var dataImage;
+var dataImage = [];
 var lstImage = [];
 
 function GetImageURL() {
-    var dir = "./img/gallery";
-    var fileExtension = ".jpg";
-    $.ajax({
-        url: dir,
-        success: function (data) {
-            dataImage = $(data).find("a:contains(" + fileExtension + ")");
-            RenderImageGallery(dataImage);
-        },
-    });
+    for (let i = 0; i < 16; i++) {
+        dataImage.push(`./img/gallery/img${i + 1}.jpg`);
+    }
+    RenderImageGallery(dataImage);
 }
 
 function RenderImageGallery(data, pageIndex = 1) {
@@ -172,11 +167,11 @@ function RenderImageGallery(data, pageIndex = 1) {
 
     $(".gallery__list").empty();
     lstImage = [];
-    data.each(function () {
-        lstImage.push(this.href);
+    data.forEach((element) => {
+        lstImage.push(element);
         $(".gallery__list").append(
             `<div class="col-xs-6 col-m-4 gallery__item">
-                <img src="${this.href}" alt="${this.href.split("/")[this.href.split("/").length - 1].split(".")[0]}">
+                <img src="${element}" alt="${element.split("/")[element.split("/").length - 1].split(".")[0]}">
             </div>`
         );
         $("div.gallery__item").click(function (e) {
