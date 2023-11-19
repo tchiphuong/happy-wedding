@@ -1,3 +1,6 @@
+const browserLanguage = navigator.language || navigator.userLanguage;
+const language = browserLanguage.split("-")[0];
+
 $(function () {
     function onReady(callback) {
         var intervalId = window.setInterval(function () {
@@ -9,7 +12,7 @@ $(function () {
     }
 
     function setVisible(selector, visible) {
-        document.querySelector(selector).style.display = visible ? "block" : "none";
+        document.querySelector(selector).style.display = visible ? "flex" : "none";
     }
 
     onReady(function () {
@@ -18,24 +21,8 @@ $(function () {
     });
 
     $(".view-img").hide();
-    var translate = function (jsdata) {
-        $("[langKey]").each(function (index) {
-            var strTr = jsdata[$(this).attr("langKey")];
-            $(this).html(strTr);
-            $(this).attr("placeholder", strTr);
-        });
-    };
 
-    setLanguage(localStorage.getItem("langId") || "vi");
-    function setLanguage(langCode) {
-        var jsonUrl = "./lang/" + langCode + ".json";
-        $.ajax({
-            url: jsonUrl,
-            dataType: "json",
-            async: false,
-            success: translate,
-        });
-    }
+    setLanguage(localStorage.getItem("langId") || language);
 
     $("button#btnChangeLang").click(function (e) {
         localStorage.setItem("langId", e.currentTarget.attributes.langid.value);
@@ -49,7 +36,13 @@ $(function () {
         var now = new Date();
         now = Date.parse(now) / 1000;
 
-        var timeLeft = endTime - now;
+        var timeLeft = 0;
+
+        if (endTime > now) {
+            timeLeft = endTime - now;
+        } else {
+            timeLeft = now - endTime;
+        }
 
         var days = Math.floor(timeLeft / 86400);
         var hours = Math.floor((timeLeft - days * 86400) / 3600);
@@ -99,27 +92,40 @@ $(function () {
     GetImageURL();
 
     $("#download-invite").on("click", function () {
-        const toImgArea = document.getElementById("img-fill");
-
-        // transform to canvas
-        html2canvas(toImgArea, {
-            type: "view",
-        }).then(function (canvas) {
-            var a = document.createElement("a");
-            // toDataURL defaults to png, so we need to request a jpeg, then convert for file download.
-            a.href = canvas.toDataURL("image/jpeg").replace("image/jpeg", "image/octet-stream");
-            a.download = "somefilename.jpg";
-            a.click();
+        html2canvas(document.getElementById("invite")).then(function (canvas) {
+            var imgData = canvas.toDataURL("image/png");
+            var link = document.createElement("a");
+            link.href = imgData;
+            link.download = `invite.png`;
+            link.click();
         });
     });
 });
+
+var translate = function (jsdata) {
+    $("[langKey]").each(function (index) {
+        var strTr = jsdata[$(this).attr("langKey")];
+        $(this).html(strTr);
+        $(this).attr("placeholder", strTr);
+    });
+};
+
+function setLanguage(langCode = null) {
+    var jsonUrl = "./lang/" + (langCode ?? language) + ".json";
+    $.ajax({
+        url: jsonUrl,
+        dataType: "json",
+        async: false,
+        success: translate,
+    });
+}
 
 var dataImage = [];
 var lstImage = [];
 
 function GetImageURL() {
-    for (let i = 0; i < 16; i++) {
-        dataImage.push(`./img/gallery/img${i + 1}.jpg`);
+    for (let i = 0; i < 24; i++) {
+        dataImage.push(`./img/gallery/img (${i + 1}).jpg`);
     }
     RenderImageGallery(dataImage);
 }
@@ -170,7 +176,7 @@ function RenderImageGallery(data, pageIndex = 1) {
     data.forEach((element) => {
         lstImage.push(element);
         $(".gallery__list").append(
-            `<div class="col-xs-6 col-m-4 gallery__item">
+            `<div class="col-xs-4 col-m-3 gallery__item">
                 <img src="${element}" alt="${element.split("/")[element.split("/").length - 1].split(".")[0]}">
             </div>`
         );
@@ -213,3 +219,10 @@ btn.on("click", function (e) {
     e.preventDefault();
     $("html, body").animate({ scrollTop: 0 }, "300");
 });
+
+$("#download").on("click", function () {
+    console.log(123);
+    convertToImage();
+});
+
+function convertToImage() {}
