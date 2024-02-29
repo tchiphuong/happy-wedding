@@ -10,6 +10,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Tiro+Gurmukhi&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.10.1/viewer.min.css">
     <link rel="stylesheet" href="./css/all.min.css" />
     <link rel="stylesheet" href="./css/style.min.css" />
     <title langkey="lbl_title">Document</title>
@@ -18,7 +19,7 @@
 <body style="height: 100%;">
     <div class="loader"></div>
     <div class="wrapper">
-        <section class="cover">
+        <section class="cover" style="background-image: url(./img/cover.jpg);">
             <div class="countdown">
                 <div class="countdown__name">Isabella<span>&</span>Andrew</div>
                 <h2 class="countdown__title">Are getting Married in</h2>
@@ -57,7 +58,7 @@
         </section>
         <section class="invite">
             <div class="invite__detail row" id="invite">
-                <img class="invite__img" src="./img/img15.jpg" alt="">
+                <img class="invite__img" src="./img/invite.jpg" alt="">
                 <div class="invite__card col-xs-12 col-s-12">
                     <div class="invite__title">
                         <div>Save</div>
@@ -113,16 +114,10 @@
             </div>
         </section>
     </div>
-    <div class="view-img container">
-        <button class="view-img--button prev" id="prev" title="Prev"><i class="fa-solid fa-chevron-left"></i></button>
-        <div class="view-img__wrap">
-            <img class="view-img__img" src="./img/melodylogistics-lunar-new-year-holiday-en.jpg" alt="">
-        </div>
-        <button class="view-img--button next" id="next" title="Next"><i class="fa-solid fa-chevron-right"></i></button>
-    </div>
     <button id="button" type="button" title="Scroll to top" class="btn-scroll-top">
         <i class="fa-solid fa-chevron-up"></i>
     </button>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.10.1/viewer.min.js"></script>
     <script src="./js/html2canvas.min.js"></script>
     <script src="./js/jquery-3.4.1.js"></script>
     <script src="./js/main.js"></script>

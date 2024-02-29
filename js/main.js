@@ -121,10 +121,9 @@ function setLanguage(langCode = null) {
 }
 
 var dataImage = [];
-var lstImage = [];
 
 function GetImageURL() {
-    for (let i = 0; i < 24; i++) {
+    for (let i = 0; i < 128; i++) {
         dataImage.push(`./img/gallery/img (${i + 1}).jpg`);
     }
     RenderImageGallery(dataImage);
@@ -134,7 +133,7 @@ function RenderImageGallery(data, pageIndex = 1) {
     const length = data.length;
     const itemInPage = 12;
     const totalPage = parseInt(Math.ceil(length / itemInPage));
-    data = data.slice((pageIndex - 1) * itemInPage, itemInPage * pageIndex);
+    const dataFilter = data.slice((pageIndex - 1) * itemInPage, itemInPage * pageIndex);
     $(".pagination").empty();
     if (pageIndex > 1) {
         $(".pagination").append(
@@ -158,49 +157,36 @@ function RenderImageGallery(data, pageIndex = 1) {
         );
     }
 
-    $(".pagination__index").on("click", function () {
-        $(this)
-            .parents(".pagination")
-            .find("pagination__item")
-            .each(function () {
-                $(this).parent().removeClass("active");
-            });
-        const pageIndex = $(this).attr("page-target");
-        RenderImageGallery(dataImage, pageIndex);
-        $(this).parent().addClass("active");
-        window.location.href = "#gallery";
-    });
-
     $(".gallery__list").empty();
-    lstImage = [];
     data.forEach((element) => {
-        lstImage.push(element);
-        $(".gallery__list").append(
-            `<div class="col-xs-4 col-m-3 gallery__item">
+        if (dataFilter.includes(element)) {
+            $(".gallery__list").append(
+                `<div class="col-xs-4 col-m-3 gallery__item">
                 <img src="${element}" alt="${element.split("/")[element.split("/").length - 1].split(".")[0]}">
-            </div>`
-        );
-        $("div.gallery__item").click(function (e) {
-            $(".view-img").show();
-            $(".view-img__img").attr("src", $(e.currentTarget).find("img")[0].currentSrc);
-        });
-
-        $(".view-img__wrap").click(function (e) {
-            $(this).parent().hide();
-        });
+                </div>`
+            );
+        } else {
+            $(".gallery__list").append(
+                `<div class="col-xs-4 col-m-3 gallery__item" style="display: none;">
+                <img src="${element}" alt="${element.split("/")[element.split("/").length - 1].split(".")[0]}">
+                </div>`
+            );
+        }
     });
+    viewerInit();
 }
 
-$(document).on("click", "#prev", function () {
-    var img = $(".view-img__img");
-    var imgIndex = (lstImage.indexOf(img.attr("src")) - 1 + lstImage.length) % lstImage.length;
-    img.attr("src", lstImage[imgIndex]);
-});
-
-$(document).on("click", "#next", function () {
-    var img = $(".view-img__img");
-    var imgIndex = (lstImage.indexOf(img.attr("src")) + 1) % lstImage.length;
-    img.attr("src", lstImage[imgIndex]);
+$(document).on("click", ".pagination__index", function () {
+    $(this)
+        .parents(".pagination")
+        .find("pagination__item")
+        .each(function () {
+            $(this).parent().removeClass("active");
+        });
+    const pageIndex = $(this).attr("page-target");
+    RenderImageGallery(dataImage, pageIndex);
+    $(this).parent().addClass("active");
+    window.location.href = "#gallery";
 });
 
 var btn = $("#button");
@@ -221,8 +207,57 @@ btn.on("click", function (e) {
 });
 
 $("#download").on("click", function () {
-    console.log(123);
     convertToImage();
 });
 
 function convertToImage() {}
+
+var $viewer;
+
+function viewerInit() {
+    // Đảm bảo rằng trình xem cũ đã được xóa bỏ trước khi tạo lại
+    if ($viewer) {
+        $viewer.destroy();
+    }
+
+    // Tạo lại trình xem với các tùy chọn mới
+    $viewer = new Viewer($("#gallery")[0], {
+        toolbar: {
+            zoomIn: 4,
+            zoomOut: 4,
+            oneToOne: 4,
+            reset: 4,
+            prev: 4,
+            play: 4,
+            next: 4,
+            rotateLeft: 4,
+            rotateRight: 4,
+            flipHorizontal: 4,
+            flipVertical: 4,
+        },
+        backdrop: true,
+        button: true,
+        focus: true,
+        fullscreen: true,
+        loading: true,
+        loop: true,
+        keyboard: true,
+        movable: true,
+        navbar: true,
+        rotatable: true,
+        scalable: true,
+        slideOnTouch: true,
+        title: true,
+        toggleOnDblclick: true,
+        toolbar: true,
+        tooltip: true,
+        transition: true,
+        zoomable: true,
+        zoomOnTouch: true,
+        zoomOnWheel: true,
+    });
+}
+
+$(document).ready(function () {
+    viewerInit();
+});

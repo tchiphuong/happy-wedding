@@ -16,8 +16,6 @@
 	}
 
 	.cover {
-		background-image: url("../img/cover3.jpg");
-		//background-image: url("https://images.unsplash.com/photo-1529634597503-139d3726fed5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1169&q=80");
 		background-position: center;
 		//background-position: right;
 		background-repeat: no-repeat;
@@ -336,6 +334,9 @@
 			flex-direction: column;
 			justify-content: center;
 			align-items: center;
+			& > * {
+				line-height: 3.9rem;
+			}
 		}
 		&__background {
 			position: absolute;
@@ -410,6 +411,7 @@
 	width: 100%;
 	display: flex;
 	justify-content: center;
+	flex-wrap: wrap;
 	gap: 0.5rem;
 	&__index {
 		min-width: unset;
