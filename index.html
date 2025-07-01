@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8" />
     <title>Thiệp mời cưới</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.3/angular.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
-    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/locale/vi.js"></script>
+    <script src="js/angular.min.js"></script>
+    <script src="js/jquery-3.7.0.min.js"></script>
+    <script src="js/papaparse.min.js"></script>
+    <script src="js/tailwindcss.js"></script>
+    <link rel="stylesheet" href="css/aos.css" />
+    <script src="js/aos.js"></script>
+    <script src="js/moment.min.js"></script>
+    <script src="js/vi.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Great+Vibes&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         @keyframes fade-in {
@@ -777,7 +777,7 @@
             </div>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script src="js/html2canvas.min.js"></script>
     <script>
         'use strict';
 
@@ -821,7 +821,7 @@
 
                 // Google Sheet để lưu lời chúc
                 SHEET_URL: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTMtcxpF1-6PGeiSra83svCf30f9Qvwq6lrzLBtGpgzYgM-MaHNArTdjIBFAttvrE3xeWidqZRAJ3Nh/pub?output=csv',
-                HERO_IMAGE: 'https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3',
+                HERO_IMAGE: 'img/hero.jpg',
 
                 // Gallery ảnh cưới
                 GALLERY: {
@@ -829,27 +829,27 @@
                     SUBTITLE: 'Những khoảnh khắc đáng nhớ của chúng tôi',
                     IMAGES: [
                         {
-                            url: 'https://images.unsplash.com/photo-1460364157752-926555421a7e',
+                            url: 'img/first-date.jpg',
                             caption: 'First Date'
                         },
                         {
-                            url: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc',
+                            url: 'img/proposal.jpg',
                             caption: 'The Proposal'
                         },
                         {
-                            url: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed',
+                            url: 'img/prewedding.jpg',
                             caption: 'Pre-wedding'
                         },
                         {
-                            url: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed',
+                            url: 'img/prewedding.jpg',
                             caption: 'Engagement'
                         },
                         {
-                            url: 'https://images.unsplash.com/photo-1545232979-8bf68ee9b1af',
+                            url: 'img/together.jpg',
                             caption: 'Together'
                         },
                         {
-                            url: 'https://images.unsplash.com/photo-1522673607200-164d1b6ce486',
+                            url: 'img/love.jpg',
                             caption: 'Love'
                         }
                     ]
@@ -866,6 +866,9 @@
             vm.gallerySubtitle = WEDDING_CONFIG.GALLERY.SUBTITLE;
             vm.galleryImages = WEDDING_CONFIG.GALLERY.IMAGES;
             vm.currentImageIndex = 0;
+
+            // Thêm biến currentYear cho footer
+            vm.currentYear = new Date().getFullYear();
 
             // Initialize data
             vm.wishes = [];
@@ -942,51 +945,6 @@
                         link.click();
                     });
                 }, 100);
-            };
-
-            // Thiệp đơn giản cho html2canvas
-            vm.downloadSimpleInvitation = function () {
-                // Tạo vùng thiệp đơn giản
-                var simpleDiv = document.createElement('div');
-                simpleDiv.id = 'simple-invitation';
-                simpleDiv.style.cssText = [
-                    'width:600px',
-                    'margin:40px auto',
-                    'padding:40px',
-                    'background:#fff',
-                    'border:4px solid #ec4899',
-                    'border-radius:32px',
-                    'box-shadow:0 4px 32px rgba(236,72,153,0.15)',
-                    'font-family:Arial,sans-serif',
-                    'color:#be185d',
-                    'text-align:center',
-                    'position:fixed',
-                    'top:50%',
-                    'left:50%',
-                    'transform:translate(-50%,-50%)',
-                    'z-index:9999',
-                ].join(';');
-                simpleDiv.innerHTML = `
-                    <h2 style="font-size:2.5rem;font-family:'Great Vibes',cursive;color:#ec4899;margin-bottom:16px;">Thiệp Mời</h2>
-                    <div style="font-size:1.1rem;color:#6b7280;margin-bottom:24px;">Trân trọng kính mời</div>
-                    <div style="font-size:2rem;font-family:'Great Vibes',cursive;color:#ec4899;margin-bottom:8px;">${vm.coupleNames.split(' ♥ ')[0]}</div>
-                    <div style="font-size:2rem;font-family:'Great Vibes',cursive;color:#ec4899;margin-bottom:16px;">&amp;</div>
-                    <div style="font-size:2rem;font-family:'Great Vibes',cursive;color:#ec4899;margin-bottom:24px;">${vm.coupleNames.split(' ♥ ')[1]}</div>
-                    <div style="font-size:1.2rem;color:#be185d;margin-bottom:16px;">Hạnh Phúc Trọn Đời</div>
-                    <div style="height:2px;width:60%;background:linear-gradient(90deg,#ec4899,#f9a8d4,#ec4899);margin:24px auto 24px auto;border-radius:8px;"></div>
-                    <div style="font-size:1.1rem;color:#6b7280;margin-bottom:8px;"><b>Thời gian:</b> ${vm.partyDateTime.split(' - ')[1]} lúc ${vm.partyDateTime.split(' - ')[0]}</div>
-                    <div style="font-size:1.1rem;color:#6b7280;"><b>Địa điểm:</b> ${vm.partyAddress}</div>
-                `;
-                document.body.appendChild(simpleDiv);
-                setTimeout(function () {
-                    html2canvas(simpleDiv, { backgroundColor: '#fff', scale: 2 }).then(function (canvas) {
-                        document.body.removeChild(simpleDiv);
-                        var link = document.createElement('a');
-                        link.download = 'thiep-moi-don-gian.png';
-                        link.href = canvas.toDataURL('image/png');
-                        link.click();
-                    });
-                }, 200);
             };
 
             // Initialize features
@@ -1205,5 +1163,12 @@
         }]);
     </script>
 
+    <!-- Footer -->
+    <footer class="w-full text-center py-6 text-gray-500 text-sm">
+        © 2022 - {{ctrl.currentYear}}
+        <a href="https://www.facebook.com/tchiphuong" target="_blank" rel="noopener" class="text-pink-500 hover:underline">
+            Phuong Tran
+        </a>. All rights reserved.
+    </footer>
 </body>
 </html>
