@@ -1,126 +1,1209 @@
 <!DOCTYPE html>
-<html lang="en" style="height: 100%;">
-
+<html lang="vi" ng-app="weddingApp" ng-controller="MainCtrl as ctrl">
 <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/x-icon" href="./img/favicon.ico">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Tiro+Gurmukhi&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.10.1/viewer.min.css">
-    <link rel="stylesheet" href="./css/all.min.css" />
-    <link rel="stylesheet" href="./css/style.min.css" />
-    <title langkey="lbl_title">Document</title>
+    <title>Thiệp mời cưới</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.3/angular.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/locale/vi.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Great+Vibes&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        @keyframes fade-in {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in {
+            animation: fade-in 0.5s ease-out forwards;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) rotate(0deg) scale(1);
+                opacity: 1;
+            }
+
+            20% {
+                transform: translateY(-100px) rotate(3deg) scale(1.05);
+                opacity: 0.9;
+            }
+
+            50% {
+                transform: translateY(-300px) rotate(-3deg) scale(1.1);
+                opacity: 0.7;
+            }
+
+            80% {
+                transform: translateY(-400px) rotate(3deg) scale(1.05);
+                opacity: 0.4;
+            }
+
+            100% {
+                transform: translateY(-500px) rotate(0deg) scale(1);
+                opacity: 0;
+            }
+        }
+
+        .floating-wish {
+            animation: floatUp 5s ease forwards;
+            transform-origin: center bottom;
+            filter: drop-shadow(0 0 6px rgb(219 39 119 / 0.8));
+            position: absolute;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+
+        .modal-bg {
+            background-color: rgba(0, 0, 0, 0.6);
+        }
+
+        @keyframes heartFloat {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg) scale(1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(-100vh) translateX(var(--tx)) rotate(var(--r)) scale(0);
+                opacity: 0;
+            }
+        }
+
+        .floating-heart {
+            --tx: 0px;
+            --r: 0deg;
+            position: fixed;
+            color: #EC4899;
+            animation: heartFloat 4s ease-in forwards;
+            pointer-events: none;
+        }
+
+        .hero-section {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('');
+            /* Will be set by JS */
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+        }
+
+        .countdown-item {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            text-align: center;
+            min-width: 100px;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.02);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+
+        .gallery-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1rem;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+            color: white;
+            opacity: 0;
+            transform: translateY(1rem);
+            transition: all 0.3s ease;
+        }
+
+        .gallery-item:hover .gallery-caption {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .modal-image {
+            max-height: 90vh;
+            max-width: 90vw;
+            object-fit: contain;
+        }
+
+        /* Invitation Section Styles */
+        @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Dancing+Script:wght@400;700&display=swap');
+
+        .font-great-vibes {
+            font-family: 'Great Vibes', cursive;
+            transition: all 0.3s ease;
+        }
+
+        .font-great-vibes:hover {
+            text-shadow: 2px 2px 4px rgba(236, 72, 153, 0.3);
+            transform: scale(1.05);
+            color: #EC4899;
+        }
+
+        .font-dancing {
+            font-family: 'Dancing Script', cursive;
+        }
+
+        .invitation-card {
+            background: linear-gradient(135deg, #fff 0%, #fff9fb 100%);
+            position: relative;
+        }
+
+        .invitation-card::before,
+        .invitation-card::after {
+            content: '';
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            opacity: 0.1;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23EC4899' d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: contain;
+        }
+
+        .invitation-card::before {
+            top: 20px;
+            left: 20px;
+            transform: rotate(-30deg);
+        }
+
+        .invitation-card::after {
+            bottom: 20px;
+            right: 20px;
+            transform: rotate(30deg);
+        }
+
+        .gallery-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1rem;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+            color: white;
+            opacity: 0;
+            transform: translateY(1rem);
+            transition: all 0.3s ease;
+        }
+
+        .gallery-item:hover .gallery-caption {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .modal-image {
+            max-height: 90vh;
+            max-width: 90vw;
+            object-fit: contain;
+        }
+
+        /* Invitation Section Styles */
+        .invitation-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .invitation-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background: rgba(255, 255, 255, 0.8);
+            z-index: 1;
+        }
+
+        .invitation-card h2 {
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .invitation-card p {
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Matrix Rain Effect */
+        @keyframes matrixRain {
+            0% {
+                transform: translateY(0);
+            }
+
+            100% {
+                transform: translateY(100vh);
+            }
+        }
+
+        .matrix-rain {
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .matrix-rain::before {
+            content: '';
+            position: absolute;
+            top: -100%;
+            left: 50%;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: translateX(-50%);
+            animation: matrixRain 1.5s linear infinite;
+        }
+
+        .matrix-rain::after {
+            content: '';
+            position: absolute;
+            top: -100%;
+            left: 50%;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: translateX(-50%);
+            animation: matrixRain 1.5s linear infinite;
+            animation-delay: 0.75s;
+        }
+
+        /* Glitch Effect */
+        @keyframes glitch {
+            0% {
+                transform: translate(0);
+            }
+
+            20% {
+                transform: translate(-2px, 2px);
+            }
+
+            40% {
+                transform: translate(2px, -2px);
+            }
+
+            60% {
+                transform: translate(-2px, -2px);
+            }
+
+            80% {
+                transform: translate(2px, 2px);
+            }
+
+            100% {
+                transform: translate(0);
+            }
+        }
+
+        .glitch-container {
+            position: relative;
+            display: inline-block;
+            overflow: hidden;
+        }
+
+        .glitch {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: inherit;
+            clip-path: inset(0 0 0 0);
+            animation: glitch 1.5s infinite;
+        }
+
+        .glitch::before {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: inherit;
+            clip-path: inset(0 0 0 0);
+            animation: glitch 1.5s infinite;
+            animation-delay: 0.1s;
+        }
+
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: inherit;
+            clip-path: inset(0 0 0 0);
+            animation: glitch 1.5s infinite;
+            animation-delay: 0.2s;
+        }
+
+        .glitch-text {
+            animation: glitch 3s infinite;
+            text-shadow: 2px 2px 10px rgba(236, 72, 153, 0.5);
+        }
+
+        @keyframes typing {
+            from {
+                width: 0
+            }
+
+            to {
+                width: 100%
+            }
+        }
+
+        .typing-text {
+            overflow: hidden;
+            white-space: nowrap;
+            border-right: 2px solid;
+            animation: typing 3s steps(50, end),
+                blink-caret .75s step-end infinite;
+        }
+
+        @keyframes loading {
+            from {
+                width: 0;
+            }
+
+            to {
+                width: 100%;
+            }
+        }
+
+        .loading-bar-container {
+            width: 100%;
+            height: 4px;
+            background: rgba(236, 72, 153, 0.2);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .loading-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #EC4899, #F472B6);
+            animation: loading 2s ease-out forwards;
+        }
+
+        .circuit-pattern {
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath fill='none' stroke='rgba(236, 72, 153, 0.2)' stroke-width='1' d='M10,10 L90,10 M10,90 L90,90 M10,50 L90,50 M50,10 L50,90'/%3E%3C/svg%3E");
+            background-size: cover;
+            opacity: 0.5;
+        }
+
+        .cyberpunk-text {
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            position: relative;
+        }
+
+        .cyberpunk-text::after {
+            content: attr(data-text);
+            position: absolute;
+            left: 2px;
+            text-shadow: -1px 0 #EC4899;
+            top: 0;
+            color: white;
+            background: rgba(0, 0, 0, 0.7);
+            overflow: hidden;
+            clip: rect(0, 900px, 0, 0);
+            animation: noise-anim 2s infinite linear alternate-reverse;
+        }
+
+        @keyframes matrix-rain {
+            0% {
+                transform: translateY(-100%);
+            }
+
+            100% {
+                transform: translateY(100%);
+            }
+        }
+
+        .matrix-rain {
+            position: absolute;
+            color: #EC4899;
+            font-family: monospace;
+            font-size: 10px;
+            text-align: center;
+            opacity: 0.3;
+        }
+    </style>
 </head>
+<body class="bg-gradient-to-br from-pink-50 via-pink-100 to-pink-200 min-h-screen" style="font-family: 'Inter', sans-serif;">
+    <!-- Hero Section -->
+    <section class="hero-section flex items-center justify-center text-center text-white">
+        <div class="space-y-6">
+            <h1 class="text-6xl font-extrabold mb-4" ng-bind="ctrl.coupleNames">Nam ❤️ Nữ</h1>
+            <p class="text-2xl font-light">Trân trọng mời bạn đến dự lễ thành hôn của chúng tôi</p>
+            <div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl mx-auto">
+                <div class="countdown-item">
+                    <div class="text-3xl font-bold text-pink-600" ng-bind="ctrl.countdown.days">00</div>
+                    <div class="text-sm text-pink-700">Ngày</div>
+                </div>
+                <div class="countdown-item">
+                    <div class="text-3xl font-bold text-pink-600" ng-bind="ctrl.countdown.hours">00</div>
+                    <div class="text-sm text-pink-700">Giờ</div>
+                </div>
+                <div class="countdown-item">
+                    <div class="text-3xl font-bold text-pink-600" ng-bind="ctrl.countdown.minutes">00</div>
+                    <div class="text-sm text-pink-700">Phút</div>
+                </div>
+                <div class="countdown-item">
+                    <div class="text-3xl font-bold text-pink-600" ng-bind="ctrl.countdown.seconds">00</div>
+                    <div class="text-sm text-pink-700">Giây</div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-<body style="height: 100%;">
-    <div class="loader"></div>
-    <div class="wrapper">
-        <section class="cover" style="background-image: url(./img/cover.jpg);">
-            <div class="countdown">
-                <div class="countdown__name">Isabella<span>&</span>Andrew</div>
-                <h2 class="countdown__title">Are getting Married in</h2>
-                <div id="timer" class="countdown__detail">
-                    <div class="countdown__item days">
-                        <div class="countdown__item--child" id="days">
-                            <div>0</div>
-                            <div>0</div>
-                        </div>
-                        <div langKey="lbl_days"></div>
+    <!-- Invitation Section -->
+    <section class="min-h-screen py-20 relative overflow-hidden bg-gradient-to-br from-pink-50 to-white">
+        <div class="absolute inset-0 z-0">
+            <!-- Pattern overlay -->
+            <div class="absolute inset-0 opacity-5 bg-[url('https://www.transparenttextures.com/patterns/flowers.png')]"></div>
+            <!-- Gradient overlay -->
+            <div class="absolute inset-0 bg-gradient-to-tr from-pink-100/50 via-white/30 to-purple-100/50"></div>
+        </div>
+
+        <div class="container mx-auto px-4 py-12 relative z-10">
+            <div class="max-w-2xl mx-auto">
+                <div class="relative bg-white/90 backdrop-blur-lg border-8 border-pink-300 rounded-[2rem] shadow-2xl overflow-hidden invitation-card" style="box-shadow: 0 0 50px rgba(236, 72, 153, 0.15);">
+
+                    <!-- Background hoa văn chìm bằng SVG -->
+                    <div class="absolute inset-0 opacity-10">
+                        <svg class="w-full h-full" viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice">
+                            <defs>
+                                <pattern id="pattern-hoa" x="0" y="0" width="50" height="50" patternUnits="userSpaceOnUse">
+                                    <rect x="5" y="5" width="40" height="40" rx="10" fill="#f9a8d4" stroke="pink" stroke-width="2" />
+                                </pattern>
+                            </defs>
+                            <rect width="100%" height="100%" fill="url(#pattern-hoa)" />
+                        </svg>
                     </div>
-                    <div class="countdown__item hours">
-                        <div class="countdown__item--child" id="hours">
-                            <div>0</div>
-                            <div>0</div>
-                        </div>
-                        <div langKey="lbl_hours"></div>
+
+                    <!-- Trang trí viền hoa góc bằng SVG -->
+                    <div class="absolute top-0 left-0 w-24 h-24 text-pink-200 opacity-50">
+                        <svg viewBox="0 0 100 100" class="w-full h-full">
+                            <circle cx="50" cy="50" r="40" fill="currentColor" />
+                        </svg>
                     </div>
-                    <div class="countdown__item minutes">
-                        <div class="countdown__item--child" id="minutes">
-                            <div>0</div>
-                            <div>0</div>
-                        </div>
-                        <div langKey="lbl_minutes"></div>
+                    <div class="absolute top-0 right-0 w-24 h-24 text-pink-200 opacity-50 rotate-90">
+                        <svg viewBox="0 0 100 100" class="w-full h-full">
+                            <circle cx="50" cy="50" r="40" fill="currentColor" />
+                        </svg>
                     </div>
-                    <div class="countdown__item seconds">
-                        <div class="countdown__item--child" id="seconds">
-                            <div>0</div>
-                            <div>0</div>
+                    <div class="absolute bottom-0 left-0 w-24 h-24 text-pink-200 opacity-50 -rotate-90">
+                        <svg viewBox="0 0 100 100" class="w-full h-full">
+                            <circle cx="50" cy="50" r="40" fill="currentColor" />
+                        </svg>
+                    </div>
+                    <div class="absolute bottom-0 right-0 w-24 h-24 text-pink-200 opacity-50 rotate-180">
+                        <svg viewBox="0 0 100 100" class="w-full h-full">
+                            <circle cx="50" cy="50" r="40" fill="currentColor" />
+                        </svg>
+                    </div>
+
+                    <!-- Nội dung thiệp -->
+                    <div class="relative z-10 p-12">
+
+                        <!-- Tiêu đề Thiệp Mời -->
+                        <div class="text-center mb-8">
+                            <h3 class="text-4xl font-great-vibes text-pink-600 drop-shadow-lg">Thiệp Mời</h3>
+                            <p class="text-gray-600 italic mt-2">Trân trọng kính mời</p>
                         </div>
-                        <div langKey="lbl_seconds"></div>
+
+                        <!-- Nội dung chính -->
+                        <div class="text-center space-y-6">
+                            <p class="text-gray-700 text-lg">Kính mời quý vị tới tham dự buổi lễ trọng đại cùng gia đình chúng tôi</p>
+
+                            <div class="flex items-center justify-center space-x-6">
+                                <h2 class="text-5xl font-great-vibes text-pink-500 drop-shadow-md hover:text-pink-400 transition">{{ctrl.coupleNames.split(' ♥ ')[0]}}</h2>
+                                <span class="text-4xl text-pink-400">&</span>
+                                <h2 class="text-5xl font-great-vibes text-pink-500 drop-shadow-md hover:text-pink-400 transition">{{ctrl.coupleNames.split(' ♥ ')[1]}}</h2>
+                            </div>
+
+                            <p class="text-xl text-gray-600 italic tracking-wide">Hạnh Phúc Trọn Đời</p>
+                        </div>
+
+                        <!-- Trang trí hoa văn dưới -->
+                        <div class="flex justify-center mt-12">
+                            <div class="w-40 h-2 bg-gradient-to-r from-pink-300 via-pink-200 to-pink-300 rounded-full"></div>
+                        </div>
+
+                        <!-- Thông tin ngày giờ địa điểm -->
+                        <div class="text-center mt-8 text-gray-700 space-y-2">
+                            <p><strong>Thời gian:</strong> {{ctrl.partyDateTime.split(' - ')[1]}} lúc {{ctrl.partyDateTime.split(' - ')[0]}}</p>
+                            <p><strong>Địa điểm:</strong> {{ctrl.partyAddress}}</p>
+                        </div>
+
+                        <!-- Nút tải hình thiệp mời -->
+                        <div class="flex justify-center mt-8 gap-4">
+                            <button class="px-6 py-3 bg-pink-500 hover:bg-pink-600 text-white font-semibold rounded-lg shadow-md transition transform hover:scale-105" ng-click="ctrl.downloadInvitation()">
+                                <svg class="w-5 h-5 inline-block mr-2 -mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3" />
+                                </svg>
+                                Tải hình thiệp
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
-            <img src="./img/curl-peel-paper.png" alt="">
-        </section>
-        <section class="invite">
-            <div class="invite__detail row" id="invite">
-                <img class="invite__img" src="./img/invite.jpg" alt="">
-                <div class="invite__card col-xs-12 col-s-12">
-                    <div class="invite__title">
-                        <div>Save</div>
-                        <span>The</span>
-                        <div>Date</div>
+        </div>
+
+        <!-- Họa tiết trang trí -->
+        <div class="absolute bottom-0 left-0 w-32 h-32 transform -translate-x-1/2 translate-y-1/2 opacity-10">
+            <svg viewBox="0 0 32 32" fill="currentColor" class="w-full h-full text-pink-300">
+                <rect x="4" y="4" width="24" height="24" rx="8" fill="currentColor" />
+            </svg>
+        </div>
+        <div class="absolute top-0 right-0 w-32 h-32 transform translate-x-1/2 -translate-y-1/2 opacity-10">
+            <svg viewBox="0 0 32 32" fill="currentColor" class="w-full h-full text-pink-300">
+                <rect x="4" y="4" width="24" height="24" rx="8" fill="currentColor" />
+            </svg>
+        </div>
+    </section>
+
+    <!-- Wedding Info Section -->
+    <section class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto text-center">
+                <h2 class="text-6xl font-great-vibes text-pink-600 mb-4 tracking-wider" data-aos="fade-up">Save the Date</h2>
+                <p class="text-xl text-gray-600 mb-12" data-aos="fade-up" data-aos-delay="100">Được tổ chức vào</p>
+
+                <div class="grid md:grid-cols-2 gap-12 mb-16">
+                    <!-- Lễ cưới -->
+                    <div class="bg-gradient-to-br from-pink-50 to-white rounded-2xl p-8 shadow-lg transform hover:scale-105 transition-all duration-300" data-aos="fade-right">
+                        <div class="relative mb-8">
+                            <div class="w-20 h-20 bg-gradient-to-r from-pink-400 to-pink-600 rounded-full flex items-center justify-center mx-auto">
+                                <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                                </svg>
+                            </div>
+                            <div class="absolute -bottom-4 left-1/2 transform -translate-x-1/2">
+                                <div class="px-4 py-2 bg-pink-500 text-white rounded-full text-sm font-medium shadow-lg">
+                                    Lễ cưới nhà gái
+                                </div>
+                            </div>
+                        </div>
+                        <div class="space-y-6 text-center">
+                            <div>
+                                <h4 class="text-lg font-medium text-gray-600">Thời gian</h4>
+                                <p class="text-xl font-semibold text-gray-800 mt-1">{{ctrl.ceremonyDateTime}}</p>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-medium text-gray-600">Địa điểm</h4>
+                                <p class="text-xl font-semibold text-gray-800 mt-1">{{ctrl.ceremonyAddress}}</p>
+                                <p class="text-gray-600 mt-1">{{ctrl.ceremonyCity}}</p>
+                            </div>
+                            <a href="https://maps.app.goo.gl/WfAE8hjda2MA2jm56" target="_blank" class="inline-flex items-center px-6 py-3 bg-pink-500 hover:bg-pink-600 text-white font-medium rounded-full transition-colors duration-200">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                                Xem bản đồ
+                            </a>
+                        </div>
                     </div>
-                    <div class="invite__content col-xs-12 col-s-12 col-m-6 col-l-6">
-                        <h class="invite__content--name">Isabella <i class="fa-solid fa-heart"></i> Andrew</h>
-                        <p class="invite__content--date">August 10, 2024</p>
-                        <p class="invite__content--location">Cleveland, Oh</p>
-                        <p class="invite__content--name">Invite to follow</p>
+
+                    <!-- Tiệc cưới -->
+                    <div class="bg-gradient-to-br from-pink-50 to-white rounded-2xl p-8 shadow-lg transform hover:scale-105 transition-all duration-300" data-aos="fade-left">
+                        <div class="relative mb-8">
+                            <div class="w-20 h-20 bg-gradient-to-r from-pink-400 to-pink-600 rounded-full flex items-center justify-center mx-auto">
+                                <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 15.546c-.523 0-1.046.151-1.5.454a2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.701 2.701 0 00-1.5-.454M9 6v2m3-2v2m3-2v2M9 3h.01M12 3h.01M15 3h.01M21 21v-7a2 2 0 00-2-2H5a2 2 0 00-2 2v7h18zm-3-9v-2a2 2 0 00-2-2H8a2 2 0 00-2 2v2h12z"></path>
+                                </svg>
+                            </div>
+                            <div class="absolute -bottom-4 left-1/2 transform -translate-x-1/2">
+                                <div class="px-4 py-2 bg-pink-500 text-white rounded-full text-sm font-medium shadow-lg">
+                                    Tiệc cưới
+                                </div>
+                            </div>
+                        </div>
+                        <div class="space-y-6 text-center">
+                            <div>
+                                <h4 class="text-lg font-medium text-gray-600">Thời gian</h4>
+                                <p class="text-xl font-semibold text-gray-800 mt-1">{{ctrl.partyDateTime}}</p>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-medium text-gray-600">Địa điểm</h4>
+                                <p class="text-xl font-semibold text-gray-800 mt-1">{{ctrl.partyVenue}}</p>
+                                <p class="text-gray-600 mt-1">{{ctrl.partyAddress}}</p>
+                            </div>
+                            <a href="https://maps.app.goo.gl/WfAE8hjda2MA2jm56" target="_blank" class="inline-flex items-center px-6 py-3 bg-pink-500 hover:bg-pink-600 text-white font-medium rounded-full transition-colors duration-200">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                                Xem bản đồ
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Google Maps -->
+                    <!-- <div class="rounded-2xl overflow-hidden shadow-xl" data-aos="fade-up">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3919.463229556517!2d106.68226647480519!3d10.775978059190851!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMTDCsDQ2JzMzLjUiTiAxMDbCsDQxJzAxLjgiRQ!5e0!3m2!1svi!2s!4v1701185431095!5m2!1svi!2s" width="100%" height="500" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
+                    </div> -->
+
+                    <div class="mt-16 text-center col-span-2" data-aos="fade-up">
+                        <p class="text-2xl font-medium text-gray-600">Rất hân hạnh được đón tiếp</p>
+                        <div class="mt-4 inline-flex items-center space-x-2">
+                            <div class="w-16 h-0.5 bg-pink-200"></div>
+                            <svg class="w-8 h-8 text-pink-400" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                            </svg>
+                            <div class="w-16 h-0.5 bg-pink-200"></div>
+                        </div>
                     </div>
                 </div>
-                <button class="download" id="download-invite" title="In thiep"><i class="fa fa-download" aria-hidden="true"></i></button>
             </div>
-        </section>
-        <section class="container gallery" id="gallery">
-            <div class="gallery__list row">
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="py-20 bg-pink-50">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-bold text-pink-600 mb-4" ng-bind="ctrl.galleryTitle"></h2>
+                <p class="text-xl text-gray-600" ng-bind="ctrl.gallerySubtitle"></p>
             </div>
-            <ul class="pagination">
-                <li class="pagination__item active">
-                    <button class="pagination__index">1</button>
-                </li>
-                <li class="pagination_item">
-                    <button class="pagination__index">2</button>
-                </li>
-            </ul>
-        </section>
-        <section class="location">
-            <div class="map">
-                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d347.2650655345921!2d105.77761715556755!3d10.028762364403939!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31a0881eb4b8eb99%3A0xcee731b79963627b!2zVHJ1bmcgdMOibSBE4buLY2ggduG7pSB2aeG7h2MgbMOgbSB0aMOgbmggcGjhu5EgQ-G6p24gVGjGoQ!5e0!3m2!1svi!2s!4v1678010964628!5m2!1svi!2s" "
-                    width=" 100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="gallery-container">
+                <div class="gallery-item" ng-repeat="image in ctrl.galleryImages" ng-click="ctrl.openGalleryModal($index)">
+                    <img ng-src="{{image.url}}" alt="{{image.caption}}" loading="lazy">
+                    <div class="gallery-caption">
+                        <p class="text-lg font-semibold">{{image.caption}}</p>
+                    </div>
+                </div>
             </div>
-        </section>
-        <section class="footer">
-            <div class="footer__title">
-                <span><a href="http://facebook.com/tchiphuong">&copy; 2022&nbsp; Phuong Tran</a></span>
-                <h2>Thank you!</h2>
+        </div>
+    </section>
+
+    <!-- Gallery Modal -->
+    <div class="fixed inset-0 hidden items-center justify-center modal-bg z-50" id="gallery-modal" ng-click="ctrl.closeGalleryModal($event)">
+        <div class="relative">
+            <button class="absolute top-4 right-4 text-white text-4xl font-bold z-50 hover:text-pink-300 transition-colors" ng-click="ctrl.closeGalleryModal($event)">&times;</button>
+            <img id="modal-image" src="" alt="Gallery image" class="modal-image rounded-lg shadow-2xl">
+            <button class="absolute left-4 top-1/2 transform -translate-y-1/2 text-white text-4xl font-bold z-50 hover:text-pink-300 transition-colors" ng-click="ctrl.prevImage($event)">&#10094;</button>
+            <button class="absolute right-4 top-1/2 transform -translate-y-1/2 text-white text-4xl font-bold z-50 hover:text-pink-300 transition-colors" ng-click="ctrl.nextImage($event)">&#10095;</button>
+        </div>
+    </div> <!-- Gửi lời chúc Section -->
+    <section class="py-20">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col max-w-3xl mx-auto">
+                <div class="flex items-center justify-between mb-8">
+                    <h2 class="text-4xl font-bold text-pink-600">Gửi lời chúc</h2>
+                    <button class="px-6 py-3 bg-pink-500 hover:bg-pink-600 text-white font-semibold rounded-lg shadow-md transition transform hover:scale-105" ng-click="ctrl.openModal()">
+                        Gửi lời chúc của bạn
+                    </button>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-lg">
+                    <!-- Header của phần chat -->
+                    <div class="border-b p-4 flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-r from-pink-400 to-pink-600 flex items-center justify-center flex-shrink-0 shadow-sm">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-gray-800">Lời chúc</h3>
+                                <p class="text-sm text-gray-500">{{ctrl.wishes.length}} tin nhắn</p>
+                            </div>
+                        </div>
+                    </div> <!-- Container tin nhắn với thanh cuộn -->
+                    <div class="h-[600px] overflow-y-auto p-4 flex flex-col-reverse" id="messages-container">
+                        <div class="space-y-6 px-2">
+                            <div ng-repeat="wish in ctrl.displayedWishes | orderBy:'timestamp'" class="group animate-fade-in" data-aos="fade-up" data-aos-delay="{{$index * 50}}">
+                                <div class="flex items-start space-x-2 hover:bg-gray-50 rounded-lg p-2 -mx-2">
+                                    <!-- Avatar -->
+                                    <div class="w-10 h-10 rounded-full bg-gradient-to-r from-pink-400 to-pink-600 flex items-center justify-center flex-shrink-0 shadow-sm">
+                                        <span class="text-white font-bold">{{wish['Name'].charAt(0)}}</span>
+                                    </div>
+
+                                    <!-- Tin nhắn -->
+                                    <div class="flex-1 min-w-0">
+                                        <!-- Tên người gửi -->
+                                        <div class="flex items-baseline justify-between">
+                                            <p class="font-semibold text-gray-900">{{wish['Name']}}</p>
+                                            <div class="flex items-center space-x-2">
+                                                <p class="text-xs text-gray-400">{{wish.formattedTime}}</p>
+                                                <p class="text-xs text-gray-400">({{wish.exactTime}})</p>
+                                            </div>
+                                        </div> <!-- Nội dung tin nhắn -->
+                                        <div class="mt-1 bg-gray-100 px-4 py-2 rounded-2xl rounded-tl-sm inline-block max-w-[85%]">
+                                            <p class="text-gray-700 whitespace-pre-wrap break-words">{{wish['Content']}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="footer__background row">
-                <img class="col-xs-4 col-m-2" src="./img/gallery/img (1).jpg" alt="">
-                <img class="col-xs-4 col-m-2" src="./img/gallery/img (2).jpg" alt="">
-                <img class="col-xs-4 col-m-2" src="./img/gallery/img (3).jpg" alt="">
-                <img class="col-xs-4 col-m-2" src="./img/gallery/img (4).jpg" alt="">
-                <img class="col-xs-4 col-m-2" src="./img/gallery/img (5).jpg" alt="">
-                <img class="col-xs-4 col-m-2" src="./img/gallery/img (6).jpg" alt="">
-                <img class="col-xs-4 col-m-2" src="./img/gallery/img (7).jpg" alt="">
-                <img class="col-xs-4 col-m-2" src="./img/gallery/img (8).jpg" alt="">
-                <img class="col-xs-4 col-m-2" src="./img/gallery/img (9).jpg" alt="">
-                <img class="col-xs-4 col-m-2" src="./img/gallery/img (10).jpg" alt="">
-                <img class="col-xs-4 col-m-2" src="./img/gallery/img (11).jpg" alt="">
-                <img class="col-xs-4 col-m-2" src="./img/gallery/img (12).jpg" alt="">
+    </section>
+
+    <!-- Container lời chúc bay -->
+    <div id="floating-wishes" class="fixed bottom-12 left-0 right-0 flex justify-center gap-6 flex-wrap pointer-events-none z-50"></div>
+    <div id="floating-hearts" class="fixed inset-0 pointer-events-none z-40"></div>
+
+    <!-- Popup modal -->
+    <div class="fixed inset-0 hidden items-center justify-center modal-bg z-50" ng-class="{'flex': ctrl.isModalOpen, 'hidden': !ctrl.isModalOpen}" ng-click="ctrl.closeModalOnBg($event)">
+        <div class="bg-white rounded-lg max-w-3xl w-full max-h-[90vh] overflow-auto p-4 shadow-xl relative" ng-click="$event.stopPropagation()">
+            <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSe6tSq_Gmc8RV3AzeKGZIVsc-NduQQmncGDOcQ-C0r1IMAyWA/viewform?embedded=true" width="100%" height="700" frameborder="0" marginheight="0" marginwidth="0" class="rounded-lg">Đang tải…</iframe>
+            <div class="flex justify-end mt-4">
+                <button class="px-6 py-3 bg-pink-500 hover:bg-pink-600 text-white font-semibold rounded-lg shadow-md transition transform hover:scale-105" ng-click="ctrl.closeModal()" aria-label="Đóng popup">Đóng</button>
             </div>
-        </section>
+        </div>
     </div>
-    <button id="button" type="button" title="Scroll to top" class="btn-scroll-top">
-        <i class="fa-solid fa-chevron-up"></i>
-    </button>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.10.1/viewer.min.js"></script>
-    <script src="./js/html2canvas.min.js"></script>
-    <script src="./js/jquery-3.4.1.js"></script>
-    <script src="./js/main.js"></script>
-</body>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script>
+        'use strict';
 
+        // Initialize the Angular module
+        var app = angular.module('weddingApp', []);
+
+        // Define the controller with proper dependency injection
+        app.controller('MainCtrl', ['$scope', '$interval', '$timeout', function ($scope, $interval, $timeout) {
+            var vm = this;
+
+            // Define wedding date constant
+            const WEDDING_DATE = new Date('2029-06-10T17:30:00');
+
+            // Wedding configuration
+            const WEDDING_CONFIG = {
+                // Thông tin cặp đôi
+                GROOM_NAME: 'Nam',
+                BRIDE_NAME: 'Nữ',
+
+                // Thông tin sự kiện
+                WEDDING_DATE: WEDDING_DATE,
+                WEDDING_CEREMONY: {
+                    TIME: '09:00 AM',
+                    DATE: '10/06/2025',
+                    ADDRESS: '123 Đường ABC, Quận XYZ',
+                    CITY: 'TP. Hồ Chí Minh'
+                },
+                WEDDING_PARTY: {
+                    TIME: '17:30 PM',
+                    DATE: '10/06/2029',
+                    VENUE: 'Nhà hàng tiệc cưới ABC',
+                    ADDRESS: '456 Đường XYZ, Quận ABC'
+                },
+
+                // Cấu hình hiệu ứng
+                EFFECTS: {
+                    FLOATING_HEARTS_INTERVAL: 300,
+                    FLOATING_WISHES_INTERVAL: 1500,
+                    HEARTS_RANDOM_OFFSET: 200,
+                },
+
+                // Google Sheet để lưu lời chúc
+                SHEET_URL: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTMtcxpF1-6PGeiSra83svCf30f9Qvwq6lrzLBtGpgzYgM-MaHNArTdjIBFAttvrE3xeWidqZRAJ3Nh/pub?output=csv',
+                HERO_IMAGE: 'https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3',
+
+                // Gallery ảnh cưới
+                GALLERY: {
+                    TITLE: 'Album hạnh phúc',
+                    SUBTITLE: 'Những khoảnh khắc đáng nhớ của chúng tôi',
+                    IMAGES: [
+                        {
+                            url: 'https://images.unsplash.com/photo-1460364157752-926555421a7e',
+                            caption: 'First Date'
+                        },
+                        {
+                            url: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc',
+                            caption: 'The Proposal'
+                        },
+                        {
+                            url: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed',
+                            caption: 'Pre-wedding'
+                        },
+                        {
+                            url: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed',
+                            caption: 'Engagement'
+                        },
+                        {
+                            url: 'https://images.unsplash.com/photo-1545232979-8bf68ee9b1af',
+                            caption: 'Together'
+                        },
+                        {
+                            url: 'https://images.unsplash.com/photo-1522673607200-164d1b6ce486',
+                            caption: 'Love'
+                        }
+                    ]
+                }
+            };
+
+            // Set up bindings
+            vm.coupleNames = `${WEDDING_CONFIG.GROOM_NAME} ♥ ${WEDDING_CONFIG.BRIDE_NAME}`;
+            vm.ceremonyDateTime = `${WEDDING_CONFIG.WEDDING_CEREMONY.TIME} - ${WEDDING_CONFIG.WEDDING_CEREMONY.DATE}`;
+            vm.ceremonyAddress = WEDDING_CONFIG.WEDDING_CEREMONY.ADDRESS;
+            vm.partyDateTime = `${WEDDING_CONFIG.WEDDING_PARTY.TIME} - ${WEDDING_CONFIG.WEDDING_PARTY.DATE}`;
+            vm.partyAddress = `${WEDDING_CONFIG.WEDDING_PARTY.VENUE}, ${WEDDING_CONFIG.WEDDING_PARTY.ADDRESS}`;
+            vm.galleryTitle = WEDDING_CONFIG.GALLERY.TITLE;
+            vm.gallerySubtitle = WEDDING_CONFIG.GALLERY.SUBTITLE;
+            vm.galleryImages = WEDDING_CONFIG.GALLERY.IMAGES;
+            vm.currentImageIndex = 0;
+
+            // Initialize data
+            vm.wishes = [];
+            vm.displayedWishes = [];
+            vm.wishesPerPage = 10;
+            vm.currentPage = 1;
+            vm.isLoading = false;
+            vm.isModalOpen = false;
+            vm.countdown = {
+                days: '00',
+                hours: '00',
+                minutes: '00',
+                seconds: '00'
+            };
+
+            // Gallery functions
+            vm.openGalleryModal = function (index) {
+                vm.currentImageIndex = index;
+                updateModalImage();
+                $('#gallery-modal').removeClass('hidden').addClass('flex');
+            };
+
+            vm.closeGalleryModal = function (event) {
+                if ($(event.target).hasClass('modal-bg') || $(event.target).hasClass('close-modal')) {
+                    $('#gallery-modal').removeClass('flex').addClass('hidden');
+                }
+            };
+
+            vm.prevImage = function (event) {
+                event.stopPropagation();
+                vm.currentImageIndex = (vm.currentImageIndex - 1 + WEDDING_CONFIG.GALLERY.IMAGES.length) % WEDDING_CONFIG.GALLERY.IMAGES.length;
+                updateModalImage();
+            };
+
+            vm.nextImage = function (event) {
+                event.stopPropagation();
+                vm.currentImageIndex = (vm.currentImageIndex + 1) % WEDDING_CONFIG.GALLERY.IMAGES.length;
+                updateModalImage();
+            };
+
+            // Modal functions
+            vm.openModal = function () {
+                vm.isModalOpen = true;
+                $scope.$apply();
+            };
+
+            vm.closeModal = function () {
+                vm.isModalOpen = false;
+                loadWishesData();
+                $scope.$apply();
+            };
+
+            vm.closeModalOnBg = function (event) {
+                if (event.target.classList.contains('modal-bg')) {
+                    vm.isModalOpen = false;
+                    loadWishesData();
+                    $scope.$apply();
+                }
+            };
+
+            // Thêm vào controller
+            vm.downloadInvitation = function () {
+                var card = document.querySelector('.invitation-card');
+                if (!card) return;
+                var btn = card.querySelector('button[ng-click="ctrl.downloadInvitation()"]');
+                var btnDisplay = btn ? btn.style.display : null;
+                if (btn) btn.style.display = 'none';
+                setTimeout(function () {
+                    html2canvas(card, { backgroundColor: null, useCORS: true, scale: 2 }).then(function (canvas) {
+                        if (btn) btn.style.display = btnDisplay;
+                        var link = document.createElement('a');
+                        link.download = 'thiep-moi-cuoi.png';
+                        link.href = canvas.toDataURL('image/png');
+                        link.click();
+                    });
+                }, 100);
+            };
+
+            // Thiệp đơn giản cho html2canvas
+            vm.downloadSimpleInvitation = function () {
+                // Tạo vùng thiệp đơn giản
+                var simpleDiv = document.createElement('div');
+                simpleDiv.id = 'simple-invitation';
+                simpleDiv.style.cssText = [
+                    'width:600px',
+                    'margin:40px auto',
+                    'padding:40px',
+                    'background:#fff',
+                    'border:4px solid #ec4899',
+                    'border-radius:32px',
+                    'box-shadow:0 4px 32px rgba(236,72,153,0.15)',
+                    'font-family:Arial,sans-serif',
+                    'color:#be185d',
+                    'text-align:center',
+                    'position:fixed',
+                    'top:50%',
+                    'left:50%',
+                    'transform:translate(-50%,-50%)',
+                    'z-index:9999',
+                ].join(';');
+                simpleDiv.innerHTML = `
+                    <h2 style="font-size:2.5rem;font-family:'Great Vibes',cursive;color:#ec4899;margin-bottom:16px;">Thiệp Mời</h2>
+                    <div style="font-size:1.1rem;color:#6b7280;margin-bottom:24px;">Trân trọng kính mời</div>
+                    <div style="font-size:2rem;font-family:'Great Vibes',cursive;color:#ec4899;margin-bottom:8px;">${vm.coupleNames.split(' ♥ ')[0]}</div>
+                    <div style="font-size:2rem;font-family:'Great Vibes',cursive;color:#ec4899;margin-bottom:16px;">&amp;</div>
+                    <div style="font-size:2rem;font-family:'Great Vibes',cursive;color:#ec4899;margin-bottom:24px;">${vm.coupleNames.split(' ♥ ')[1]}</div>
+                    <div style="font-size:1.2rem;color:#be185d;margin-bottom:16px;">Hạnh Phúc Trọn Đời</div>
+                    <div style="height:2px;width:60%;background:linear-gradient(90deg,#ec4899,#f9a8d4,#ec4899);margin:24px auto 24px auto;border-radius:8px;"></div>
+                    <div style="font-size:1.1rem;color:#6b7280;margin-bottom:8px;"><b>Thời gian:</b> ${vm.partyDateTime.split(' - ')[1]} lúc ${vm.partyDateTime.split(' - ')[0]}</div>
+                    <div style="font-size:1.1rem;color:#6b7280;"><b>Địa điểm:</b> ${vm.partyAddress}</div>
+                `;
+                document.body.appendChild(simpleDiv);
+                setTimeout(function () {
+                    html2canvas(simpleDiv, { backgroundColor: '#fff', scale: 2 }).then(function (canvas) {
+                        document.body.removeChild(simpleDiv);
+                        var link = document.createElement('a');
+                        link.download = 'thiep-moi-don-gian.png';
+                        link.href = canvas.toDataURL('image/png');
+                        link.click();
+                    });
+                }, 200);
+            };
+
+            // Initialize features
+            function init() {
+                // Set hero background
+                $('.hero-section').css('backgroundImage', `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('${WEDDING_CONFIG.HERO_IMAGE}')`);
+
+                // Load initial data
+                loadWishesData();
+
+                // Set intervals
+                $interval(loadWishesData, 30000);
+                $interval(updateCountdown, 1000);
+
+                // Initialize features
+                initHearts();
+                initWishesFloat();
+                initGallery();
+
+                // Initialize AOS
+                AOS.init({
+                    duration: 800,
+                    offset: 100,
+                    once: true
+                });
+
+                // Bind scroll handler
+                $('#messages-container').on('scroll', handleScroll);
+            }
+
+            // Danh sách các từ cần lọc
+            const INAPPROPRIATE_WORDS = [
+                // Từ tục tiếng Việt
+                'dm', 'đm', 'dmm', 'đmm', 'dcm', 'đcm', 'dkm', 'đkm', 'cl', 'clm', 'cmm', 'clmm',
+                'cặc', 'lồn', 'buồi', 'bướm', 'đụ', 'địt', 'loz', 'l*n', 'c*c', 'b*m',
+                // Biến thể dấu sao, né filter
+                'd*m', 'đ*m', 'đ*k', 'c*l', 'l*n', 'b*o*i', 'f*ck', 'sh*t', 's*x', 'b*tch',
+                // Tiếng Anh thô tục
+                'fuck', 'fuk', 'fak', 'shit', 'sh!t', 'bitch', 'asshole', 'dick', 'pussy', 'slut', 'whore', 'sex', 'porn', 'rape',
+                // Xúc phạm trí tuệ
+                'ngu', 'ngu si', 'óc chó', 'óc trâu', 'óc lợn', 'não chó', 'não bò', 'đần', 'đần độn', 'khùng', 'dở hơi',
+                'trẩu', 'trẻ trâu', 'đú', 'ngu như bò', 'ngu như chó',
+                // Từ viết tắt đùa giỡn nặng
+                'vl', 'vcl', 'lolz', 'lmao', 'wtf',
+                // Khuyến khích bạo lực / tiêu cực
+                'tự tử', 'chết đi', 'đập đầu', 'hủy hoại', 'giết', 'đánh', 'đâm', 'hiếp',
+                // Từ khác có thể bị lợi dụng chửi
+                'như cc', 'như cức', 'như shit', 'như chó', 'cút', 'biến đi'
+            ];
+
+            // Hàm kiểm tra nội dung có phù hợp không
+            function isAppropriateContent(text) {
+                if (!text) return true;
+                text = text.toLowerCase();
+                return true;
+                return !INAPPROPRIATE_WORDS.some(word => text.includes(word.toLowerCase()));
+            }
+
+            // Hàm che các từ nhạy cảm
+            function maskInappropriateWords(text) {
+                if (!text) return '';
+                let masked = text;
+                INAPPROPRIATE_WORDS.forEach(word => {
+                    // Tạo regex không phân biệt hoa thường, toàn bộ từ
+                    const regex = new RegExp(word.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&'), 'gi');
+                    masked = masked.replace(regex, 'Trăm năm hạnh phúc');
+                });
+                return masked;
+            }
+
+            function loadWishesData() {
+                vm.isLoading = true;
+                fetch(WEDDING_CONFIG.SHEET_URL)
+                    .then(res => res.text())
+                    .then(csvText => {
+                        const data = Papa.parse(csvText, { header: true }).data;
+                        moment.locale('vi');
+                        $timeout(() => {
+                            vm.wishes = data
+                                .filter(row => row['Name'] && row['Content'])
+                                .filter(row => isAppropriateContent(row['Content']) && isAppropriateContent(row['Name']))
+                                .map(row => {
+                                    // Che từ nhạy cảm trước khi hiển thị
+                                    row.Name = maskInappropriateWords(row['Name']);
+                                    row.Content = maskInappropriateWords(row['Content']);
+                                    const timestamp = row['Timestamp'];
+                                    if (timestamp) {
+                                        const time = moment(timestamp, "DD/MM/YYYY HH:mm:ss");
+                                        row.formattedTime = time.fromNow();
+                                        row.exactTime = time.format('DD/MM/YYYY HH:mm:ss');
+                                        row.timestamp = time.valueOf();
+                                    } else {
+                                        row.formattedTime = 'Vừa xong';
+                                        row.exactTime = 'Chưa xác định';
+                                        row.timestamp = Date.now();
+                                    }
+                                    return row;
+                                });
+                            vm.displayedWishes = vm.wishes.slice(0, vm.wishesPerPage);
+                            vm.isLoading = false;
+                            $scope.$apply();
+                        });
+                    })
+                    .catch(err => {
+                        console.error('Lỗi lấy dữ liệu:', err);
+                        vm.wishes = [];
+                        vm.displayedWishes = [];
+                        vm.isLoading = false;
+                        $scope.$apply();
+                    });
+            }
+
+            function updateCountdown() {
+                const now = new Date();
+                const diff = WEDDING_DATE - now;
+
+                if (diff > 0) {
+                    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+                    $timeout(() => {
+                        vm.countdown.days = String(days).padStart(2, '0');
+                        vm.countdown.hours = String(hours).padStart(2, '0');
+                        vm.countdown.minutes = String(minutes).padStart(2, '0');
+                        vm.countdown.seconds = String(seconds).padStart(2, '0');
+                    });
+                }
+            }
+
+            function updateModalImage() {
+                const image = WEDDING_CONFIG.GALLERY.IMAGES[vm.currentImageIndex];
+                $('#modal-image').attr({
+                    'src': image.url,
+                    'alt': image.caption
+                });
+            }
+
+            function handleScroll() {
+                const $container = $('#messages-container');
+                const threshold = 100;
+                const scrollTop = $container.scrollTop();
+                const reachedBottom = $container[0].scrollHeight - scrollTop - $container.height() < threshold;
+
+                // Kiểm tra khi cuộn lên gần đầu trang
+                if (scrollTop < threshold && !vm.isLoading && vm.displayedWishes.length < vm.wishes.length) {
+                    loadMoreWishes();
+                }
+
+                if (reachedBottom && !vm.isLoading && vm.displayedWishes.length < vm.wishes.length) {
+                    loadMoreWishes();
+                }
+            }
+
+            function loadMoreWishes() {
+                if (vm.isLoading) return;
+                vm.isLoading = true;
+
+                $timeout(() => {
+                    const start = vm.currentPage * vm.wishesPerPage;
+                    const end = start + vm.wishesPerPage;
+                    const newWishes = vm.wishes.slice(start, end);
+
+                    if (newWishes.length > 0) {
+                        // Thêm tin nhắn mới vào cuối mảng
+                        vm.displayedWishes = [...vm.displayedWishes, ...newWishes];
+                        vm.currentPage++;
+                    }
+                    vm.isLoading = false;
+                }, 500);
+            }
+
+            function initHearts() {
+                setInterval(() => {
+                    const $heart = $('<div>')
+                        .addClass('floating-heart text-3xl')
+                        .text('♥')
+                        .css({
+                            '--tx': `${Math.random() * 200 - 100}px`,
+                            '--r': `${Math.random() * 360}deg`,
+                            'left': `${Math.random() * 100}vw`,
+                            'bottom': '0'
+                        });
+
+                    $heart.on('animationend', () => $heart.remove());
+                    $('#floating-hearts').append($heart);
+                }, WEDDING_CONFIG.EFFECTS.FLOATING_HEARTS_INTERVAL);
+            }
+
+            function initWishesFloat() {
+                let wishIndex = 0;
+                $interval(() => {
+                    if (vm.wishes.length > 0) {
+                        const wish = vm.wishes[wishIndex];
+                        const $div = $('<div>')
+                            .addClass('floating-wish bg-pink-500 text-white px-4 py-2 rounded-full font-semibold text-lg shadow-lg')
+                            .css('left', `${Math.random() * ($(window).width() - 200)}px`)
+                            .text(`${wish.Name}: ${wish.Content}`);
+
+                        $div.on('animationend', () => $div.remove());
+                        $('#floating-wishes').append($div);
+                        wishIndex = (wishIndex + 1) % vm.wishes.length;
+                    }
+                }, WEDDING_CONFIG.EFFECTS.FLOATING_WISHES_INTERVAL);
+            }
+
+            function initGallery() {
+                vm.galleryTitle = WEDDING_CONFIG.GALLERY.TITLE;
+                vm.gallerySubtitle = WEDDING_CONFIG.GALLERY.SUBTITLE;
+                vm.galleryImages = WEDDING_CONFIG.GALLERY.IMAGES;
+            }
+
+            // Initialize everything
+            init();
+        }]);
+    </script>
+
+</body>
 </html>
